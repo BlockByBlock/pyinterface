@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import serial
+import logging
 from time import sleep
 
 # Open serial port
@@ -14,14 +15,42 @@ ser = serial.Serial(
     xonxoff=False,
     rtscts=False,
     dsrdtr=False,
-    write_timeout=1
+    write_timeout=0
 )
 
-counter = 32  # Below 32 everything in ASCII is gibberish
-while True:
-    counter += 1
-    ser.write(str(chr(counter)))
-    print ser.readline()
-    sleep(.1)
-    if counter == 255:
-        counter = 32
+logging.basicConfig(
+    filename='serial.log',
+    filemode='w',
+    format='%(asctime)s %(message)s',
+    datefmt='%m/%d/%Y %I:%M:%S %p',
+    level=logging.DEBUG
+)
+
+logging.debug(' <<< Date and time')
+
+try:
+    ser.isOpen()
+    print ("\n\nPort is opened at ") + str(ser.port)
+    print ("\nBaud Rate: ") + str(ser.baudrate)
+
+except Exception, e:
+    print ("Port not open! Error: ") + str(e)
+    exit()
+
+counter = 32  # Below 32 in ASCII is rubbish
+
+if ser.isOpen():
+    try:
+        ser.reset_input_buffer()
+        ser.reset_output_buffer()
+        while True:
+            counter += 1
+            ser.write(str(chr(counter)))  # convert to string
+            print ser.readline()
+            sleep(.1)
+            if counter == 255:
+                counter = 32  # restart counter when reach end
+    except Exception, e1:
+        print ("Error: ") + str(e1)
+else:
+    print ("Cannot open serial port ")
