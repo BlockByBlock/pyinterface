@@ -21,12 +21,9 @@ ser = serial.Serial(
 logging.basicConfig(
     filename='serial.log',
     filemode='w',
-    format='%(asctime)s %(message)s',
-    datefmt='%m/%d/%Y %I:%M:%S %p',
+    format='',
     level=logging.DEBUG
 )
-
-logging.debug(' <<< Date and time')
 
 try:
     ser.isOpen()
@@ -46,7 +43,9 @@ if ser.isOpen():
         while True:
             counter += 1
             ser.write(str(chr(counter)))  # convert to string
-            print ser.readline()
+            data = ser.readline()
+            logging.info(data)
+            print data
             sleep(.1)
             if counter == 255:
                 counter = 32  # restart counter when reach end
