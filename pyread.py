@@ -27,28 +27,32 @@ logging.basicConfig(
 
 try:
     ser.isOpen()
-    print ("\n\nPort is opened at ") + str(ser.port)
-    print ("\nBaud Rate: ") + str(ser.baudrate)
-
+    print "\n\nPort opened on:" + str(ser.port)
+    print "\nBaudrate @ " + str(ser.baudrate)
 except Exception, e:
-    print ("Port not open! Error: ") + str(e)
+    print "Port not open! Error: " + str(e)
     exit()
 
-counter = 32  # Below 32 in ASCII is rubbish
+
+def counter_write(counter):
+    """Get data from serial via counter."""
+    counter += 1
+    ser.write(str(chr(counter)))  # convert to string
+    sleep(.1)
+    if counter == 255:
+        counter = counter  # restart counter when reach end
+    return counter
+
 
 if ser.isOpen():
     try:
         ser.reset_input_buffer()
         ser.reset_output_buffer()
         while True:
-            counter += 1
-            ser.write(str(chr(counter)))  # convert to string
-            data = ser.readline()
-            logging.info(data)
-            print data
-            sleep(.1)
-            if counter == 255:
-                counter = 32  # restart counter when reach end
+            counter_write(32)  # Below 32 for ASCII is nonsense
+            readData = ser.readline()
+            logging.info(readData)
+            print readData
     except Exception, e1:
         print ("Error: ") + str(e1)
 else:
