@@ -3,7 +3,9 @@
 """
 pyread.
 
-This module reads from serial using python
+~~~~~~~~~~
+This module reads from serial using python.
+It logs the serial data in the same directory.
 """
 
 import serial
@@ -54,7 +56,7 @@ def counter_write(counter):
 
 
 # Main function
-def main():
+def data_output():
     """Log and print serial data."""
     if ser.isOpen():
         try:
@@ -72,5 +74,5 @@ def main():
 
 
 # Run main function
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+    data_output()
