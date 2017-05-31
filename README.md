@@ -4,7 +4,8 @@ Python Serial Read
 
 	dmesg | grep tty
 
--- CONFIGURE the serial port by using portconfig.py
+-- CONFIGURE the serial port and baudrate by using portconfig.py
+-- All other settings are available on openport.py
 
 -- Logging is implemented in directory of the script
 
