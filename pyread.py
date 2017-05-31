@@ -2,6 +2,7 @@
 
 """
 pyread.
+
 ~~~~~~~~~~
 This module reads from serial using python.
 It logs the serial data in the same directory.
