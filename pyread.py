@@ -22,17 +22,6 @@ logging.basicConfig(
 # Global variables
 
 
-# Helper function
-def counter_write(counter):
-    """Get data from serial via counter."""
-    counter += 1
-    ser.write(str(chr(counter)))  # convert to string
-    sleep(.1)
-    if counter == 255:
-        counter = counter  # restart counter when reach end
-    return counter
-
-
 # Main function
 def data_output():
     """Log and print serial data."""
@@ -41,7 +30,12 @@ def data_output():
             ser.reset_input_buffer()
             ser.reset_output_buffer()
             while True:
-                counter_write(32)  # Below 32 for ASCII is nonsense
+                counter = 32  # Below 32 for ASCII not needed
+                counter += 1
+                ser.write(str(chr(counter)))  # convert to string
+                sleep(.1)
+                if counter == 255:
+                    counter = counter  # Reset counter
                 readData = ser.readline()
                 logging.info(readData)
                 print readData
@@ -52,5 +46,5 @@ def data_output():
 
 
 # Run main function
-# if __name__ == '__main__':
-data_output()
+if __name__ == '__main__':
+    data_output()
