@@ -2,7 +2,6 @@
 
 """
 pyread.
-
 ~~~~~~~~~~
 This module reads from serial using python.
 It logs the serial data in the same directory.
@@ -12,10 +11,14 @@ import serial
 import logging
 from time import sleep
 
+config_file = open("portconfig.txt")
+cport = config_file.readline().rstrip('\n')
+cbaudrate = config_file.readline()
+
 # Open serial port
 ser = serial.Serial(
-    port="/dev/ttyUSB0",  # Set serial port
-    baudrate=9600,  # baudrate: 9600, 14400, 19200, 57600, 115200
+    port=cport,  # Set serial port
+    baudrate=cbaudrate,  # baudrate: 9600, 14400, 19200, 57600, 115200
     bytesize=serial.EIGHTBITS,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
@@ -36,7 +39,7 @@ logging.basicConfig(
 try:
     ser.isOpen()
     print "\n\nPort opened on:" + str(ser.port)
-    print "\nBaudrate @ " + str(ser.baudrate) + "\n"
+    print "\nBaudrate @ " + str(ser.baudrate)
 except Exception, e:
     print "Port not open! Error: " + str(e)
     exit()
@@ -75,4 +78,4 @@ def data_output():
 
 # Run main function
 # if __name__ == '__main__':
-    data_output()
+data_output()

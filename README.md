@@ -4,9 +4,11 @@ Python Serial Read
 
 	dmesg | grep tty
 
+-- CONFIGURE the serial port by using portconfig.py
+
 -- Logging is implemented in directory of the script
 
--- To configure serial 
+-- To configure serial
 
 	serial.Serial(
 		....
