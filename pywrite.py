@@ -5,6 +5,7 @@ pywrite.
 
 ~~~~~~~~~~
 This module writes to serial using python.
+-- ybingcheng@gmail.com
 """
 from openport import open_port
 from time import sleep

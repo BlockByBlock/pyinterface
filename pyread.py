@@ -6,6 +6,7 @@ pyread.
 ~~~~~~~~~~
 This module reads from serial using python.
 It logs the serial data in the same directory.
+-- ybingcheng@gmail.com
 """
 from openport import open_port
 import logging

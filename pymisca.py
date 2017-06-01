@@ -5,15 +5,19 @@ pymisca.
 
 ~~~~~~~~~~
 This module reads misca response using python.
+-- ybingcheng@gmail.com
 """
 
 from openport import open_port
 from time import sleep
 import sys
 
+GRN = '\033[32m'
+WHT = '\033[0m'
+
 fchar = 0  # First field
 
-msgLength = 618
+msgLength = 498
 
 # All in characters, otherwise commented
 MC_misca = (fchar + 5)  # Response to SNDA
@@ -106,18 +110,21 @@ MC_CR = (MC_ETX + 1)
 ser = open_port(None)
 
 cmd = raw_input("Send Command? >> ")
-print "You have send " + cmd + " to serial port"
+print GRN + "You have send " + cmd + " to serial port" + WHT
 if cmd is not None:
     try:
         ser.write(cmd)
+        print
         sleep(1)  # Delay
         response = ser.readline()
         sleep(1)
         response_one = ser.readline()  # Backup readline
+        # respone_bb = ser.read(msgLength)  # by byte
         sleep(1)
         response_two = ser.readline()  # Backup realine 2
         print response
         print response_one
+        # print response_bb
         print response_two
         ser.close()
     except Exception, ew:

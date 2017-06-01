@@ -5,6 +5,7 @@ portconfig.
 
 ~~~~~~~~~~
 This module configure and save the port and baudrate.
+-- ybingcheng@gmail.com
 """
 
 config_file = open("portconfig.txt", "w")

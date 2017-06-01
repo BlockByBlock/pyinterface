@@ -5,12 +5,11 @@ openport.
 
 ~~~~~~~~~~
 This module opens the serial port based on portconfig text file.
+-- ybingcheng@gmail.com
 """
 
 import serial
-RED = '\033[41m'
-GRN = '\033[32m'
-WHT = '\033[0m'
+from pycolor import GRN, WHT
 
 
 def open_port(ser):
