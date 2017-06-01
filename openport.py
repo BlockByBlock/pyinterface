@@ -8,6 +8,9 @@ This module opens the serial port based on portconfig text file.
 """
 
 import serial
+RED = '\033[41m'
+GRN = '\033[32m'
+WHT = '\033[0m'
 
 
 def open_port(ser):
@@ -32,10 +35,11 @@ def open_port(ser):
 
     try:
         ser.isOpen()
-        print "\n\nPort opened on:" + str(ser.port)
-        print "\nBaudrate @ " + str(ser.baudrate)
+        ser.reset_input_buffer()
+        print GRN + "\n\nPort opened on:" + str(ser.port)
+        print "\nBaudrate @ " + str(ser.baudrate) + WHT
     except Exception, e:
-        print "Port not open! Error: " + str(e)
+        print RED + "Port not open! Error: " + str(e)
         exit()
 
     return ser
