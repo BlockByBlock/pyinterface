@@ -9,7 +9,7 @@ This module opens the serial port based on portconfig text file.
 """
 
 import serial
-from pycolor import GRN, WHT
+from pycolor import HGRN, WHT, RED
 
 
 def open_port(ser):
@@ -35,8 +35,8 @@ def open_port(ser):
     try:
         ser.isOpen()
         ser.reset_input_buffer()
-        print GRN + "\n\nPort opened on:" + str(ser.port)
-        print "\nBaudrate @ " + str(ser.baudrate) + WHT
+        print HGRN + "\nPort opened on:" + str(ser.port)
+        print "Baudrate @ " + str(ser.baudrate) + WHT
     except Exception, e:
         print RED + "Port not open! Error: " + str(e)
         exit()

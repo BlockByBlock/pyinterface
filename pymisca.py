@@ -11,9 +11,15 @@ This module reads misca response using python.
 from openport import open_port
 from time import sleep
 import sys
+import logging
+from pycolor import HYEL, WHT
 
-GRN = '\033[32m'
-WHT = '\033[0m'
+logging.basicConfig(
+    filename='misca.log',
+    filemode='w',
+    format='',
+    level=logging.DEBUG
+)
 
 fchar = 0  # First field
 
@@ -109,19 +115,22 @@ MC_CR = (MC_ETX + 1)
 
 ser = open_port(None)
 
-cmd = raw_input("Send Command? >> ")
-print GRN + "You have send " + cmd + " to serial port" + WHT
+cmd = raw_input("\nSend Command? >> ")
+print "You have send " + HYEL + cmd + WHT + " to serial port"
 if cmd is not None:
     try:
         ser.write(cmd)
         print
         sleep(1)  # Delay
         response = ser.readline()
+        logging.info(response)
         sleep(1)
         response_one = ser.readline()  # Backup readline
+        logging.info(response_one)
         # respone_bb = ser.read(msgLength)  # by byte
         sleep(1)
         response_two = ser.readline()  # Backup realine 2
+        logging.info(response_two)
         print response
         print response_one
         # print response_bb
