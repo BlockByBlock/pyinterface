@@ -5,6 +5,7 @@ pycolor.
 
 ~~~~~~~~~~
 This module colors text printed on terminal.
+https://stackoverflow.com/questions/287871/print-in-terminal-with-colors-using-python
 -- ybingcheng@gmail.com
 """
 

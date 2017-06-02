@@ -14,6 +14,7 @@ import serial
 import threading
 import logging
 from time import sleep
+from pycolor import WHT, HRED, GRN, BLU, HYEL
 
 # STX = 0x02
 # ENQ = 0x01
@@ -65,7 +66,7 @@ class Serialport(object):
         """Send command."""
         # buffer = ENQ
         cmd = raw_input("Send Command >> ")
-        print "Sending " + cmd
+        print "Sending " + HYEL + cmd + WHT
         if (self.busy == 0 and self.alive is True):
             try:
                 self.serial.write(cmd)
@@ -81,6 +82,7 @@ class Serialport(object):
                 print response_three
                 self.busy = 0
                 self.serial.close()
+                sys.exit()
             except Exception, ew:
                 print ("Error: ") + str(ew)
         else:
@@ -118,17 +120,17 @@ def main(argv):
     try:
         sp = Serialport(port, baudrate, bytesize, parity, stopbits, timeout)
     except serial.SerialException, e:
-        sys.stderr.write("Port cannot be open %r: %s\n" % (port, e))
+        sys.stderr.write(HRED + "Port cannot be open %r: %s\n" % (port, e))
         sys.exit(1)
 
-    sys.stderr.write('Reading port on %s with baudrate of %d\n' % (
+    sys.stderr.write(GRN + 'Reading port on %s with baudrate of %d\n' % (
         sp.serial.port,
         sp.serial.baudrate
     ))
 
     sp.start()
 
-    print "\nReader/Writer Tool for RS232 Device"
+    print WHT + "\nReader/Writer Tool for RS232 Device"
     print "\nOption :: "
     print "1. Write Command"
     print "2. Read Only"
@@ -136,12 +138,12 @@ def main(argv):
     print "\n"
 
     while session == 1:
-        cmdkey = raw_input("Number Only. Command: ")
+        cmdkey = raw_input(BLU + "Number Only. Command: " + WHT)
         if cmdkey == "0":
             session = 0
             sp.stop()
         elif cmdkey == "1":
-            print "Write Command and send via serial port "
+            print "Write command and send via serial port :  "
             sp.writer()
         elif cmdkey == "2":
             print "Read from serial port "
