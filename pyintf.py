@@ -35,15 +35,18 @@ class Serialport(object):
         self.serial = serial.Serial(port, baudrate, bytesize, parity,
                                     stopbits, timeout)
         self.busy = 0
-        self.buffer = ""  # Flush
-        self.readdata = ""  # Flush
+        self.dataread = ""  # Flush
 
     def start(self):
         """Start serial port thread."""
         self.alive = True
-        self.receiver_thread = threading.Thread(target=self.reader)
+        self.receiver_thread = threading.Thread(target=self.initport)
         self.receiver_thread.setDaemon(True)
         self.receiver_thread.start()
+
+    def initport(self):
+        """Initialise port and check."""
+        pass
 
     def stop(self):
         """Close serial port."""
@@ -58,12 +61,12 @@ class Serialport(object):
         """Process receiving data."""
         pass
 
-    def writer(self, cmd):
+    def writer(self):
         """Send command."""
         # buffer = ENQ
         cmd = raw_input("Send Command >> ")
-        print "Sending" + cmd
-        if cmd is not None:
+        print "Sending " + cmd
+        if (self.busy == 0 and self.alive is True):
             try:
                 self.serial.write(cmd)
                 self.busy = 1
@@ -80,6 +83,8 @@ class Serialport(object):
                 self.serial.close()
             except Exception, ew:
                 print ("Error: ") + str(ew)
+        else:
+            sys.stderr.write("Port is busy or not available")
 
     def reader(self):
         """Read serial port."""
@@ -91,9 +96,9 @@ class Serialport(object):
                 sleep(.1)
                 if counter == 225:
                     counter = counter  # Reset counter
-                dataread = self.serial.readline()
-                logging.info(dataread)
-                print dataread
+                self.dataread = self.serial.readline()
+                logging.info(self.dataread)
+                print self.dataread
         except serial.SerialException, e:
             self.alive = False
             print ("Error: ") + str(e)
@@ -116,15 +121,15 @@ def main(argv):
         sys.stderr.write("Port cannot be open %r: %s\n" % (port, e))
         sys.exit(1)
 
-    sys.stderr.write(' Reading port on %s : %d\n' % (
+    sys.stderr.write('Reading port on %s with baudrate of %d\n' % (
         sp.serial.port,
         sp.serial.baudrate
     ))
 
     sp.start()
 
-    print "Reader/Writer Tool for RS232 Device"
-    print "Option :: "
+    print "\nReader/Writer Tool for RS232 Device"
+    print "\nOption :: "
     print "1. Write Command"
     print "2. Read Only"
     print "0. Exit"
@@ -137,6 +142,7 @@ def main(argv):
             sp.stop()
         elif cmdkey == "1":
             print "Write Command and send via serial port "
+            sp.writer()
         elif cmdkey == "2":
             print "Read from serial port "
             sp.reader()
