@@ -15,7 +15,8 @@ import serial
 import threading
 
 # STX = 0x02
-# ENQ = SNDA<CR>
+# ENQ = 0x01
+
 
 class Serialport(object):
     """Create a serial port class."""
@@ -25,7 +26,20 @@ class Serialport(object):
         """Return port, baudrate."""
         self.serial = serial.Serial(port, baudrate, bytesize, parity,
                                     stopbits, timeout)
+        self.busy = 0
         self.in_cmd = 0
+        self.buffer = ""  # Flush
+        self.readdata = ""  # Flush
+
+    def user_cmd(self, cmd):
+        """Command state."""
+        self.in_cmd = 1
+        self.writer('Command is %s' % cmd)
+
+    def writer(self, cmd):
+        """Send command."""
+        # buffer = ENQ
+        self.busy = 1
 
     def start(self):
         """Start serial port thread."""
@@ -43,6 +57,10 @@ class Serialport(object):
         """Join thread."""
         self.receiver_thread.join()
 
+    def process_rx(self):
+        """Process receiving data."""
+        self.pos = 2
+
     def reader(self):
         """Read serial port."""
 #        try:
@@ -55,7 +73,7 @@ class Serialport(object):
 #                    print "Message received"
 #                    self.serial.write(chr(ENQ))
 #                    self.in_cmd = 0
-#                    self.buffer = ser.reset_input_buffer
+#                    self.buffer = ""  # Flush
 #                sys.stdout.flush()
 #        except serial.SerialException, e:
 #            self.alive = False
@@ -71,6 +89,8 @@ def main(argv):
     parity = serial.PARITY_NONE
     stopbits = serial.STOPBITS_ONE
     timeout = 0
+    session = 1
+
     try:
         sp = Serialport(port, baudrate, bytesize, parity, stopbits, timeout)
     except serial.SerialException, e:
@@ -81,3 +101,40 @@ def main(argv):
         sp.serial.port,
         sp.serial.baudrate
     ))
+
+    sp.start()
+
+    print "Reader/Writer Tool for RS232 Device"
+    print "Option :: "
+    print "1. Write Command"
+    print "2. Read Only"
+    print "0. Exit"
+    print "\n"
+
+    while session == 1:
+        cmdkey = raw_input("Number Only. Command: ")
+        if cmdkey == "0":
+            session = 0
+            sp.stop()
+        elif cmdkey == "1":
+            print "Write Command and send via serial port "
+        elif cmdkey == "2":
+            print "Read from serial port "
+        else:
+            print "Reader/Writer Tool for RS232 Device"
+            print "Option :: "
+            print "1. Write Command"
+            print "2. Read Only"
+            print "0. Exit"
+            print "\n"
+
+    try:
+        sp.join()
+    except KeyboardInterrupt:
+        pass
+    sys.stderr.write("\n >>> Exiting... ")
+    sp.join()
+
+
+if __name__ == '__main__':
+    main(sys.argv[1:])  # Take all arguments after 1st
