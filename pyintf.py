@@ -10,12 +10,20 @@ It launches a session to provide a GUI-like option.
 """
 
 import sys
-import os
 import serial
 import threading
+import logging
+from time import sleep
 
 # STX = 0x02
 # ENQ = 0x01
+
+logging.basicConfig(
+    filename='serial.log',
+    filemode='w',
+    format='',
+    level=logging.DEBUG
+)
 
 
 class Serialport(object):
@@ -53,23 +61,42 @@ class Serialport(object):
     def writer(self, cmd):
         """Send command."""
         # buffer = ENQ
-        self.busy = 1
+        cmd = raw_input("Send Command >> ")
+        print "Sending" + cmd
+        if cmd is not None:
+            try:
+                self.serial.write(cmd)
+                self.busy = 1
+                sleep(1)
+                response = self.serial.readline()
+                sleep(1)
+                response_two = self.serial.readline()
+                sleep(1)
+                response_three = self.serial.readline()
+                print response
+                print response_two
+                print response_three
+                self.busy = 0
+                self.serial.close()
+            except Exception, ew:
+                print ("Error: ") + str(ew)
 
     def reader(self):
         """Read serial port."""
-#        try:
-#            while self.alive:
-#                data = self.serial.read(1)
-#                self.buffer += data
-#                rxlen = len(self.buffer)
-#                if (rxlen == 1 and self.buffer[0] == chr(STX)):
-#                    print "Message received"
-#                    self.serial.write(chr(ENQ))
-#                    self.buffer = ""  # Flush
-#                sys.stdout.flush()
-#        except serial.SerialException, e:
-#            self.alive = False
-#            raise
+        try:
+            while self.serial.isOpen():
+                counter = 1  # Read all ASCII
+                counter += 1
+                self.serial.write(str(chr(counter)))
+                sleep(.1)
+                if counter == 225:
+                    counter = counter  # Reset counter
+                dataread = self.serial.readline()
+                logging.info(dataread)
+                print dataread
+        except serial.SerialException, e:
+            self.alive = False
+            print ("Error: ") + str(e)
 
 
 def main(argv):
@@ -112,6 +139,7 @@ def main(argv):
             print "Write Command and send via serial port "
         elif cmdkey == "2":
             print "Read from serial port "
+            sp.reader()
         else:
             print "Reader/Writer Tool for RS232 Device"
             print "Option :: "
