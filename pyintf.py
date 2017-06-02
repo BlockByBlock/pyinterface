@@ -27,19 +27,8 @@ class Serialport(object):
         self.serial = serial.Serial(port, baudrate, bytesize, parity,
                                     stopbits, timeout)
         self.busy = 0
-        self.in_cmd = 0
         self.buffer = ""  # Flush
         self.readdata = ""  # Flush
-
-    def user_cmd(self, cmd):
-        """Command state."""
-        self.in_cmd = 1
-        self.writer('Command is %s' % cmd)
-
-    def writer(self, cmd):
-        """Send command."""
-        # buffer = ENQ
-        self.busy = 1
 
     def start(self):
         """Start serial port thread."""
@@ -59,7 +48,12 @@ class Serialport(object):
 
     def process_rx(self):
         """Process receiving data."""
-        self.pos = 2
+        pass
+
+    def writer(self, cmd):
+        """Send command."""
+        # buffer = ENQ
+        self.busy = 1
 
     def reader(self):
         """Read serial port."""
@@ -68,11 +62,9 @@ class Serialport(object):
 #                data = self.serial.read(1)
 #                self.buffer += data
 #                rxlen = len(self.buffer)
-#                if (rxlen == 1 and self.buffer[0] == chr(STX)
-#                   and self.in_cmd == 1):
+#                if (rxlen == 1 and self.buffer[0] == chr(STX)):
 #                    print "Message received"
 #                    self.serial.write(chr(ENQ))
-#                    self.in_cmd = 0
 #                    self.buffer = ""  # Flush
 #                sys.stdout.flush()
 #        except serial.SerialException, e:
