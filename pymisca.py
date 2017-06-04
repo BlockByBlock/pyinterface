@@ -4,22 +4,9 @@
 pymisca.
 
 ~~~~~~~~~~
-This module reads misca response using python.
+This module stores variables of misca response.
 -- ybingcheng@gmail.com
 """
-
-from openport import open_port
-from time import sleep
-import sys
-import logging
-from pycolor import HYEL, WHT
-
-logging.basicConfig(
-    filename='misca.log',
-    filemode='w',
-    format='',
-    level=logging.DEBUG
-)
 
 fchar = 0  # First field
 
@@ -113,31 +100,4 @@ MC_ETX = (MC_F101 + 4)
 MC_CR = (MC_ETX + 1)
 # END OF ALL FIELDS IN misca
 
-ser = open_port(None)
 
-cmd = raw_input("\nSend Command? >> ")
-print "You have send " + HYEL + cmd + WHT + " to serial port"
-if cmd is not None:
-    try:
-        ser.write(cmd)
-        print
-        sleep(1)  # Delay
-        response = ser.readline()
-        logging.info(response)
-        sleep(1)
-        response_one = ser.readline()  # Backup readline
-        logging.info(response_one)
-        # respone_bb = ser.read(msgLength)  # by byte
-        sleep(1)
-        response_two = ser.readline()  # Backup realine 2
-        logging.info(response_two)
-        print response
-        print response_one
-        # print response_bb
-        print response_two
-        ser.close()
-    except Exception, ew:
-        print ("Error: ") + str(ew)
-else:
-    print "Exiting"
-    sys.exit()
