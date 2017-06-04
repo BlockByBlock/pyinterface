@@ -27,7 +27,7 @@ logging.basicConfig(
 )
 
 
-class Serialport(object):
+class SerialPort(object):
     """Create a serial port class."""
 
     def __init__(self, port, baudrate, bytesize, parity, stopbits,
@@ -61,6 +61,22 @@ class Serialport(object):
     def process_rx(self):
         """Process receiving data."""
         pass
+
+    def portconfig(self):
+    	"""Configure serial port settings."""
+    	config_file = open("portconfig.txt", "w")
+
+		cport = raw_input("Set port (e.g. /dev/ttyUSB0) :: ")
+		config_file.write(cport)
+		print ("Port is configured as " + cport)
+		config_file.write("\n")
+		cbaudrate = raw_input("Set baudrate (e.g. 9600, 57600, 115200) :: ")
+		config_file.write(cbaudrate)
+		print ("Baudrate is configured as " + cbaudrate)
+
+		# config_file.close()
+
+		print "\nPort configured successful and saved!"
 
     def writer(self):
         """Send command."""
@@ -118,7 +134,7 @@ def main(argv):
     session = 1
 
     try:
-        sp = Serialport(port, baudrate, bytesize, parity, stopbits, timeout)
+        sp = SerialPort(port, baudrate, bytesize, parity, stopbits, timeout)
     except serial.SerialException, e:
         sys.stderr.write(HRED + "Port cannot be open %r: %s\n" % (port, e))
         sys.exit(1)
@@ -134,6 +150,7 @@ def main(argv):
     print "\nOption :: "
     print "1. Write Command"
     print "2. Read Only"
+    print "3. Configure Port"
     print "0. Exit"
     print "\n"
 
@@ -146,13 +163,17 @@ def main(argv):
             print "Write command and send via serial port :  "
             sp.writer()
         elif cmdkey == "2":
-            print "Read from serial port "
+            print "Read from serial port : "
             sp.reader()
+        elif cmdkey == "3":
+        	print "Configuring serial port and baudrate : "
+        	portconfig()    
         else:
             print "Reader/Writer Tool for RS232 Device"
             print "Option :: "
             print "1. Write Command"
             print "2. Read Only"
+            print "3. Configure Port"
             print "0. Exit"
             print "\n"
 
