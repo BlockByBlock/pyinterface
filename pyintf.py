@@ -63,20 +63,20 @@ class SerialPort(object):
         pass
 
     def portconfig(self):
-    	"""Configure serial port settings."""
-    	config_file = open("portconfig.txt", "w")
+        """Configure serial port settings."""
+        config_file = open("portconfig.txt", "w")
 
-		cport = raw_input("Set port (e.g. /dev/ttyUSB0) :: ")
-		config_file.write(cport)
-		print ("Port is configured as " + cport)
-		config_file.write("\n")
-		cbaudrate = raw_input("Set baudrate (e.g. 9600, 57600, 115200) :: ")
-		config_file.write(cbaudrate)
-		print ("Baudrate is configured as " + cbaudrate)
+        cport = raw_input("Set port (e.g. /dev/ttyUSB0) :: ")
+        config_file.write(cport)
+        print ("Port is configured as " + cport)
+        config_file.write("\n")
+        cbaudrate = raw_input("Set baudrate (e.g. 9600, 57600, 115200) :: ")
+        config_file.write(cbaudrate)
+        print ("Baudrate is configured as " + cbaudrate)
 
-		# config_file.close()
-
-		print "\nPort configured successful and saved!"
+        # config_file.close()
+        print GRN + "\nPort configured successful and saved!" + WHT
+        self.menu()
 
     def writer(self):
         """Send command."""
@@ -121,6 +121,16 @@ class SerialPort(object):
             self.alive = False
             print ("Error: ") + str(e)
 
+    def menu(self):
+        """Print menu for command selection."""
+        print WHT + "\nReader/Writer Tool for RS232 Device"
+        print "\nOption :: "
+        print "1. Write Command"
+        print "2. Read Only"
+        print "3. Configure Port"
+        print "0. Exit"
+        print "\n"
+
 
 def main(argv):
     """Open serial port."""
@@ -145,15 +155,7 @@ def main(argv):
     ))
 
     sp.start()
-
-    print WHT + "\nReader/Writer Tool for RS232 Device"
-    print "\nOption :: "
-    print "1. Write Command"
-    print "2. Read Only"
-    print "3. Configure Port"
-    print "0. Exit"
-    print "\n"
-
+    sp.menu()
     while session == 1:
         cmdkey = raw_input(BLU + "Number Only. Command: " + WHT)
         if cmdkey == "0":
@@ -166,16 +168,10 @@ def main(argv):
             print "Read from serial port : "
             sp.reader()
         elif cmdkey == "3":
-        	print "Configuring serial port and baudrate : "
-        	portconfig()    
+            print "Configuring serial port and baudrate : "
+            sp.portconfig()
         else:
-            print "Reader/Writer Tool for RS232 Device"
-            print "Option :: "
-            print "1. Write Command"
-            print "2. Read Only"
-            print "3. Configure Port"
-            print "0. Exit"
-            print "\n"
+            sp.menu()
 
     try:
         sp.join()
