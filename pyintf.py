@@ -107,15 +107,8 @@ class SerialPort(object):
         """Read serial port."""
         try:
             while self.serial.isOpen():
-                counter = 1  # Read all ASCII
-                counter += 1
-                self.serial.write(str(chr(counter)))
-                sleep(.1)
-                if counter == 225:
-                    counter = counter  # Reset counter
-                self.dataread = self.serial.readline()
-                logging.info(self.dataread)
-                print self.dataread
+                logging.info(self.buffer)
+                print self.buffer
         except serial.SerialException, e:
             self.alive = False
             print ("Error: ") + str(e)
