@@ -48,7 +48,10 @@ class SerialPort(object):
 
     def listener(self):
         """Listen to the serial port."""
-        pass
+        try:
+            while self.alive:
+                data = self.serial.read(1)
+                self.buffer += data
 
     def stop(self):
         """Close serial port."""
