@@ -37,7 +37,6 @@ class SerialPort(object):
                                     stopbits, timeout)
         self.busy = 0
         self.dataread = ""  # Flush
-        self.buffer = ""
 
     def start(self):
         """Start serial port thread."""
@@ -102,9 +101,9 @@ class SerialPort(object):
 
     def reader(self):
         """Read serial port."""
+        counter = 1
         try:
             while self.serial.isOpen():
-                counter = 1  # Read all ASCII
                 counter += 1
                 self.serial.write(str(chr(counter)))
                 sleep(.1)
