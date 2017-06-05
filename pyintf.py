@@ -52,6 +52,10 @@ class SerialPort(object):
             while self.alive:
                 data = self.serial.read(1)
                 self.buffer += data
+        except serial.SerialException, e:
+            self.alive = False
+            print ("Error: ") + str(e)
+        print self.buffer
 
     def stop(self):
         """Close serial port."""
@@ -103,16 +107,6 @@ class SerialPort(object):
         else:
             sys.stderr.write("Port is busy or not available")
 
-    def reader(self):
-        """Read serial port."""
-        try:
-            while self.serial.isOpen():
-                logging.info(self.buffer)
-                print self.buffer
-        except serial.SerialException, e:
-            self.alive = False
-            print ("Error: ") + str(e)
-
     def menu(self):
         """Print menu for command selection."""
         print WHT + "\nReader/Writer Tool for RS232 Device"
@@ -158,7 +152,7 @@ def main(argv):
             sp.writer()
         elif cmdkey == "2":
             print "Read from serial port : "
-            sp.reader()
+            sp.listener()
         elif cmdkey == "3":
             print "Configuring serial port and baudrate : "
             sp.portconfig()
