@@ -35,7 +35,6 @@ class SerialPort(object):
         """Return port, baudrate."""
         self.serial = serial.Serial(port, baudrate, bytesize, parity,
                                     stopbits, timeout)
-        self.busy = 0
         self.dataread = ""  # Flush
 
     def start(self):
@@ -78,26 +77,18 @@ class SerialPort(object):
         # buffer = ENQ
         cmd = raw_input("Send Command >> ")
         print "Sending " + HYEL + cmd + WHT
-        if (self.busy == 0 and self.alive is True):
-            try:
-                self.serial.write(cmd)
-                self.busy = 1
+        self.serial.write(cmd)
+        sleep(1)  # buffer
+        count = 1
+        while (count < 5):
+            self.dataread = self.serial.readline()
+            if (self.dataread.isalnum() is False):
+                print self.dataread
+                count += 1
                 sleep(1)
-                response = self.serial.readline()
-                sleep(1)
-                response_two = self.serial.readline()
-                sleep(1)
-                response_three = self.serial.readline()
-                print response
-                print response_two
-                print response_three
-                self.busy = 0
-                self.serial.close()
-                sys.exit()
-            except Exception, ew:
-                print ("Error: ") + str(ew)
-        else:
-            sys.stderr.write("Port is busy or not available")
+            else:
+                print self.dataread
+        sys.exit()
 
     def reader(self):
         """Read serial port."""
