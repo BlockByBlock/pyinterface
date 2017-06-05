@@ -11,7 +11,7 @@ It launches a session and provide a menu option.
 
 import sys
 import serial
-import threading
+# import threading
 import logging
 from time import sleep
 from pycolor import WHT, HRED, GRN, BLU, HYEL
@@ -37,25 +37,25 @@ class SerialPort(object):
                                     stopbits, timeout)
         self.dataread = ""  # Flush
 
-    def start(self):
-        """Start serial port thread."""
-        self.alive = True
-        self.thread = threading.Thread(target=self.listener)
-        # self.thread.setDaemon(True)
-        self.thread.start()
+#    def start(self):
+#        """Start serial port thread."""
+#        self.alive = True
+#        self.thread = threading.Thread(target=self.listener)
+#        # self.thread.setDaemon(True)
+#        self.thread.start()
 
-    def listener(self):
-        """Listen to the serial port."""
-        pass
+#    def listener(self):
+#        """Listen to the serial port."""
+#        pass
 
     def stop(self):
         """Close serial port."""
         self.serial.close()
-        self.alive = False
+#        self.alive = False
 
-    def join(self):
-        """Join thread."""
-        self.thread.join()
+#    def join(self):
+#        """Join thread."""
+#        self.thread.join()
 
     def portconfig(self):
         """Configure serial port settings."""
@@ -140,7 +140,7 @@ def main(argv):
         sp.serial.baudrate
     ) + WHT)
 
-    sp.start()
+#    sp.start()
     sp.menu()
     while session == 1:
         cmdkey = raw_input(BLU + "Number Only. Command: " + WHT)
@@ -159,12 +159,12 @@ def main(argv):
         else:
             sp.menu()
 
-    try:
-        sp.join()
-    except KeyboardInterrupt:
-        pass
+#    try:
+#        sp.join()
+#    except KeyboardInterrupt:
+#        pass
     sys.stderr.write("\n >>> Exiting... ")
-    sp.join()
+#    sp.join()
 
 
 if __name__ == '__main__':
