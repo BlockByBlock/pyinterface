@@ -40,10 +40,10 @@ class SerialPort(object):
         self.buffer = ""
 
     def start(self):
-        """Start serial port thread."""
+        """Start serial port listener thread."""
         self.alive = True
         self.thread = threading.Thread(target=self.listener)
-        # self.thread.setDaemon(True)
+        self.thread.setDaemon(True)
         self.thread.start()
 
     def listener(self):
@@ -51,7 +51,13 @@ class SerialPort(object):
         try:
             while self.alive:
                 data = self.serial.read(1)
-                self.buffer += data
+                if (data.isalnum() is False):
+                    if (len(self.buffer) == 5):
+                        self.buffer = ""  # flush
+                    else:
+                        self.buffer += data
+                else:
+                    self.dataread += data
         except serial.SerialException, e:
             self.alive = False
             print ("Error: ") + str(e)
@@ -63,7 +69,7 @@ class SerialPort(object):
         self.alive = False
 
     def join(self):
-        """Join thread."""
+        """Join listerner thread."""
         self.thread.join()
 
     def portconfig(self):
@@ -86,26 +92,17 @@ class SerialPort(object):
         # buffer = ENQ
         cmd = raw_input("Send Command >> ")
         print "Sending " + HYEL + cmd + WHT
-        if (self.busy == 0 and self.alive is True):
-            try:
-                self.serial.write(cmd)
-                self.busy = 1
+        sleep(1)  # buffer
+        count = 1
+        while (count < 5):
+            self.dataread = self.serial.readline()
+            if (self.dataread.isalnum() is False):
+                print self.dataread
+                count += 1
                 sleep(1)
-                response = self.serial.readline()
-                sleep(1)
-                response_two = self.serial.readline()
-                sleep(1)
-                response_three = self.serial.readline()
-                print response
-                print response_two
-                print response_three
-                self.busy = 0
-                self.serial.close()
-                sys.exit()
-            except Exception, ew:
-                print ("Error: ") + str(ew)
-        else:
-            sys.stderr.write("Port is busy or not available")
+            else:
+                print self.dataread
+        sys.exit()
 
     def menu(self):
         """Print menu for command selection."""
@@ -153,6 +150,7 @@ def main(argv):
         elif cmdkey == "2":
             print "Read from serial port : "
             sp.listener()
+            print sp.dataread
         elif cmdkey == "3":
             print "Configuring serial port and baudrate : "
             sp.portconfig()
