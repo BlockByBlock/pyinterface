@@ -5,7 +5,7 @@ pyintf.
 
 ~~~~~~~~~~
 This module reads from serial using python.
-It launches a session to provide a GUI-like option.
+It launches a session and provide a menu option.
 -- ybingcheng@gmail.com
 """
 
@@ -37,17 +37,14 @@ class SerialPort(object):
                                     stopbits, timeout)
         self.busy = 0
         self.dataread = ""  # Flush
+        self.currthread = ""
 
     def start(self):
         """Start serial port thread."""
         self.alive = True
-        self.receiver_thread = threading.Thread(target=self.initport)
-        self.receiver_thread.setDaemon(True)
-        self.receiver_thread.start()
-
-    def initport(self):
-        """Initialise port and check."""
-        pass
+        self.thread = threading.Thread(target=self.currthread)
+        self.thread.setDaemon(True)
+        self.thread.start()
 
     def stop(self):
         """Close serial port."""
@@ -56,11 +53,7 @@ class SerialPort(object):
 
     def join(self):
         """Join thread."""
-        self.receiver_thread.join()
-
-    def process_rx(self):
-        """Process receiving data."""
-        pass
+        self.thread.join()
 
     def portconfig(self):
         """Configure serial port settings."""
@@ -80,6 +73,7 @@ class SerialPort(object):
 
     def writer(self):
         """Send command."""
+        self.currthread = self.writer
         # buffer = ENQ
         cmd = raw_input("Send Command >> ")
         print "Sending " + HYEL + cmd + WHT
@@ -106,6 +100,7 @@ class SerialPort(object):
 
     def reader(self):
         """Read serial port."""
+        self.currthread = self.reader
         try:
             while self.serial.isOpen():
                 counter = 1  # Read all ASCII
@@ -152,7 +147,7 @@ def main(argv):
     sys.stderr.write(GRN + 'Reading port on %s with baudrate of %d\n' % (
         sp.serial.port,
         sp.serial.baudrate
-    ))
+    ) + WHT)
 
     sp.start()
     sp.menu()
