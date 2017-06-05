@@ -37,14 +37,18 @@ class SerialPort(object):
                                     stopbits, timeout)
         self.busy = 0
         self.dataread = ""  # Flush
-        self.currthread = ""
+        self.buffer = ""
 
     def start(self):
         """Start serial port thread."""
         self.alive = True
-        self.thread = threading.Thread(target=self.currthread)
-        self.thread.setDaemon(True)
+        self.thread = threading.Thread(target=self.listener)
+        # self.thread.setDaemon(True)
         self.thread.start()
+
+    def listener(self):
+        """Listen to the serial port."""
+        pass
 
     def stop(self):
         """Close serial port."""
@@ -58,7 +62,6 @@ class SerialPort(object):
     def portconfig(self):
         """Configure serial port settings."""
         config_file = open("portconfig.txt", "w")
-
         cport = raw_input("Set port (e.g. /dev/ttyUSB0) :: ")
         config_file.write(cport)
         print ("Port is configured as " + cport)
@@ -73,7 +76,6 @@ class SerialPort(object):
 
     def writer(self):
         """Send command."""
-        self.currthread = self.writer
         # buffer = ENQ
         cmd = raw_input("Send Command >> ")
         print "Sending " + HYEL + cmd + WHT
@@ -100,7 +102,6 @@ class SerialPort(object):
 
     def reader(self):
         """Read serial port."""
-        self.currthread = self.reader
         try:
             while self.serial.isOpen():
                 counter = 1  # Read all ASCII
