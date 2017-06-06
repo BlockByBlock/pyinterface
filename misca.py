@@ -7,13 +7,10 @@ pymisca.
 This module stores variables of misca response.
 -- ybingcheng@gmail.com
 """
-
 fchar = 0  # First field
 
 # From misca to carriage return
 msglength = 499
-
-msg_buffer = []
 
 # All in characters, otherwise commented
 # Minus one for the addition is the length of the field
@@ -104,4 +101,14 @@ MC_ETX = (MC_F101 + 4)
 MC_CR = (MC_ETX + 1)
 # END OF ALL FIELDS IN misca
 
-print MC_CR
+
+def procfieldvar():
+    """Process end index."""
+    fieldvar = int(input("Input field e.g. MC_F49_50, MC_F5, MC_F100: "))
+    return fieldvar
+
+
+def procprevfield():
+    """Process start index."""
+    prevfield = int(input("Input previous field: "))
+    return prevfield

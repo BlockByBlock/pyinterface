@@ -15,7 +15,7 @@ import serial
 import logging
 from time import sleep
 from pycolor import WHT, HRED, GRN, BLU, HYEL
-from misca import msglength
+from misca import msglength, procfieldvar, procprevfield
 
 # STX = 0x02
 # ENQ = 0x01
@@ -173,7 +173,9 @@ def main(argv):
             sp.portconfig()
         elif cmdkey == "4":
             print "Processing message fields"
-            print return_msg
+            endindex = procfieldvar()
+            startindex = procprevfield()
+            print return_msg[startindex:endindex]
         else:
             sp.menu()
 
