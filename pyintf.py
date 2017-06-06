@@ -15,6 +15,7 @@ import serial
 import logging
 from time import sleep
 from pycolor import WHT, HRED, GRN, BLU, HYEL
+from misca import msglength
 
 # STX = 0x02
 # ENQ = 0x01
@@ -51,6 +52,8 @@ class SerialPort(object):
     def stop(self):
         """Close serial port."""
         self.serial.close()
+        print "Exiting...\n"
+        sys.exit()
 #        self.alive = False
 
 #    def join(self):
@@ -87,8 +90,16 @@ class SerialPort(object):
                 count += 1
                 sleep(1)
             else:
+                datalen = len(self.dataread)
+                if (datalen == msglength):
+                    store_msg = self.dataread
+                    # print "Msg identified :: "
+                else:
+                    pass
+                logging.info(self.dataread)
                 print self.dataread
-        sys.exit()
+                # print "The msg length is " + str(datalen)
+        return store_msg
 
     def reader(self):
         """Read serial port."""
@@ -109,11 +120,14 @@ class SerialPort(object):
 
     def menu(self):
         """Print menu for command selection."""
-        print WHT + "\nReader/Writer Tool for RS232 Device"
-        print "\nOption :: "
+        print "--------------------------------------"
+        print "Reader/Writer Tool for RS232 Device"
+        print "--------------------------------------"
+        print "Option :: "
         print "1. Write Command"
         print "2. Read Only"
         print "3. Configure Port"
+        print "4. Process Msg Fields"
         print "0. Exit"
         print "\n"
 
@@ -143,19 +157,23 @@ def main(argv):
 #    sp.start()
     sp.menu()
     while session == 1:
-        cmdkey = raw_input(BLU + "Number Only. Command: " + WHT)
+        cmdkey = raw_input(BLU + "Number Only. Key In Command: " + WHT)
         if cmdkey == "0":
             session = 0
             sp.stop()
         elif cmdkey == "1":
             print "Write command and send via serial port :  "
-            sp.writer()
+            return_msg = sp.writer()  # Nil count
+            # sys.exit()
         elif cmdkey == "2":
             print "Read from serial port : "
             sp.reader()
         elif cmdkey == "3":
             print "Configuring serial port and baudrate : "
             sp.portconfig()
+        elif cmdkey == "4":
+            print "Processing message fields"
+            print return_msg
         else:
             sp.menu()
 
@@ -163,7 +181,7 @@ def main(argv):
 #        sp.join()
 #    except KeyboardInterrupt:
 #        pass
-    sys.stderr.write("\n >>> Exiting... ")
+#    sys.stderr.write("\n >>> Exiting... ")
 #    sp.join()
 
 

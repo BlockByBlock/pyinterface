@@ -10,9 +10,13 @@ This module stores variables of misca response.
 
 fchar = 0  # First field
 
-msgLength = 498
+# From misca to carriage return
+msglength = 499
+
+msg_buffer = []
 
 # All in characters, otherwise commented
+# Minus one for the addition is the length of the field
 MC_misca = (fchar + 5)  # Response to SNDA
 MC_706 = (MC_misca + 3)  # Bytes between STX and CR
 MC_97 = (MC_706 + 2)  # Bytes between STX and ETX
@@ -100,4 +104,4 @@ MC_ETX = (MC_F101 + 4)
 MC_CR = (MC_ETX + 1)
 # END OF ALL FIELDS IN misca
 
-
+print MC_CR
