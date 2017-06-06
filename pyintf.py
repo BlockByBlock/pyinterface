@@ -78,6 +78,7 @@ class SerialPort(object):
     def writer(self):
         """Send command."""
         # buffer = ENQ
+        store_buffer = ""
         cmd = raw_input("Send Command >> ")
         print "Sending " + HYEL + cmd + WHT
         self.serial.write(cmd)
@@ -95,10 +96,13 @@ class SerialPort(object):
                     store_msg = self.dataread
                     # print "Msg identified :: "
                 else:
-                    pass
+                    store_msg = self.dataread
+                    store_buffer += store_msg  # store up
+                    store_msg = store_buffer
                 logging.info(self.dataread)
                 print self.dataread
                 # print "The msg length is " + str(datalen)
+        # print store_msg  # To see store_msg value
         return store_msg
 
     def reader(self):
