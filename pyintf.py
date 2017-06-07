@@ -60,21 +60,6 @@ class SerialPort(object):
 #        """Join thread."""
 #        self.thread.join()
 
-    def portconfig(self):
-        """Configure serial port settings."""
-        config_file = open("portconfig.txt", "w")
-        cport = raw_input("Set port (e.g. /dev/ttyUSB0) :: ")
-        config_file.write(cport)
-        print ("Port is configured as " + cport)
-        config_file.write("\n")
-        cbaudrate = raw_input("Set baudrate (e.g. 9600, 57600, 115200) :: ")
-        config_file.write(cbaudrate)
-        print ("Baudrate is configured as " + cbaudrate)
-
-        # config_file.close()
-        print GRN + "\nPort configured successful and saved!" + WHT
-        self.menu()
-
     def writer(self):
         """Send command."""
         # buffer = ENQ
@@ -133,8 +118,7 @@ class SerialPort(object):
         print "Option :: "
         print "1. Write Command"
         print "2. Read Only"
-        print "3. Configure Port"
-        print "4. Process Msg Fields"
+        print "3. Process Msg Fields"
         print "0. Exit"
         print "\n"
 
@@ -176,9 +160,6 @@ def main(argv):
             print "Read from serial port : "
             sp.reader()
         elif cmdkey == "3":
-            print "Configuring serial port and baudrate : "
-            sp.portconfig()
-        elif cmdkey == "4":
             print "Processing message fields"
             endindex = procfieldvar()
             startindex = procprevfield()
