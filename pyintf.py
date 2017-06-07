@@ -78,10 +78,13 @@ class SerialPort(object):
     def writer(self):
         """Send command."""
         # buffer = ENQ
+        self.serial.reset_input_buffer()
+        self.serial.reset_output_buffer()
         store_buffer = ""
         cmd = raw_input("Send Command >> ")
-        print "Sending " + HYEL + cmd + WHT
+        sleep(1)
         self.serial.write(cmd)
+        print "Sending " + HYEL + cmd + WHT
         sleep(1)  # buffer
         count = 1
         while (count < 5):
