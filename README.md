@@ -4,7 +4,7 @@ Python Serial Interface
 
 	dmesg | grep tty
 
--- CONFIGURE the serial port and baudrate by using portconfig.py
+-- CONFIGURE the serial port and baudrate by editing portconfig.txt
 -- All other settings can be added on pyintf.py
 
 -- Log is saved in the directory of the script
