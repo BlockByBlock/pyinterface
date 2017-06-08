@@ -67,8 +67,10 @@ class SerialPort(object):
         self.serial.reset_output_buffer()
         store_buffer = ""
         cmd = raw_input("Send Command >> ")
+        bcmd = bytearray(cmd + '\r')
+        print type(bcmd)
         sleep(1)
-        self.serial.write(cmd)
+        self.serial.write(bcmd)
         print "Sending " + HYEL + cmd + WHT
         sleep(1)  # buffer
         count = 1
