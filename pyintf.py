@@ -15,7 +15,7 @@ import serial
 import logging
 from time import sleep
 from pycolor import WHT, HRED, GRN, BLU, HYEL
-from misca import msglength, procfieldvar, procprevfield
+from misca import procfieldvar, procprevfield
 
 # STX = 0x02
 # ENQ = 0x01
@@ -63,36 +63,22 @@ class SerialPort(object):
     def writer(self):
         """Send command."""
         # buffer = ENQ
-        self.serial.reset_input_buffer()
-        self.serial.reset_output_buffer()
         store_buffer = ""
         cmd = raw_input("Send Command >> ")
         bcmd = bytearray(cmd + '\r')
-        print type(bcmd)
-        sleep(1)
         self.serial.write(bcmd)
-        print "Sending " + HYEL + cmd + WHT
-        sleep(1)  # buffer
-        count = 1
-        while (count < 5):
+        sleep(3)  # buffer
+        print "Sending " + HYEL + bcmd + WHT
+        writelen = len(bcmd) + 5
+        for x in range(0, writelen):
             self.dataread = self.serial.readline()
-            if (self.dataread.isalnum() is False):
-                print self.dataread
-                count += 1
-                sleep(1)
+#            print self.dataread
+            if isinstance(self.dataread, str) is True:
+                store_msg = self.dataread
+                store_buffer += store_msg  # store up
+                store_msg = store_buffer
             else:
-                datalen = len(self.dataread)
-                if (datalen == msglength):
-                    store_msg = self.dataread
-                    # print "Msg identified :: "
-                else:
-                    store_msg = self.dataread
-                    store_buffer += store_msg  # store up
-                    store_msg = store_buffer
-                logging.info(self.dataread)
-                print self.dataread
-                # print "The msg length is " + str(datalen)
-        # print store_msg  # To see store_msg value
+                print "Detected not string"
         return store_msg
 
     def reader(self):
@@ -156,7 +142,14 @@ def main(argv):
             sp.stop()
         elif cmdkey == "1":
             print "Write command and send via serial port :  "
+            sp.serial.reset_input_buffer()
+            sp.serial.reset_output_buffer()
             return_msg = sp.writer()  # Nil count
+            if return_msg is None:
+                print "Nothing"
+            else:
+                print "I received : "
+                print return_msg
             # sys.exit()
         elif cmdkey == "2":
             print "Read from serial port : "
